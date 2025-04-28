@@ -7,30 +7,41 @@ use Illuminate\Http\Client\RequestException;
 
 class SmsSak
 {
-    protected string $baseUrl;
+    protected string $sendOtpUrl;
+    protected string $verifyOtpUrl;
+
     protected string $apiKey;
     protected string $projectId;
     protected string $country;
 
     public function __construct()
     {
-        $this->baseUrl = config('smssak.base_url');
+
+        $this->sendOtpUrl = config('smssak.send_otp_url', 'https://sendotp-47lvvvrp4a-uc.a.run.app');
+        $this->verifyOtpUrl = config('smssak.verify_otp_url', 'https://verifyotp-47lvvvrp4a-uc.a.run.app');
+
         $this->apiKey = config('smssak.api_key');
         $this->projectId = config('smssak.project_id');
         $this->country = config('smssak.country', 'dz');
     }
 
+    /**
+     *
+     *
+     * @param string $phone
+     * @return array
+     */
     public function sendOtp(string $phone): array
     {
         try {
             $response = Http::withHeaders([
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
-            ])->post("{$this->baseUrl}", [
+                'key' => $this->apiKey,
+            ])->post($this->sendOtpUrl, [
                 'country' => $this->country,
                 'phone' => $phone,
-                'project_id' => $this->projectId,
-                'key' => $this->apiKey,
+                'projectId' => $this->projectId,
             ]);
 
             $json = $response->json();
@@ -47,21 +58,28 @@ class SmsSak
         }
     }
 
+    /**
+     *
+     *
+     * @param string $phone
+     * @param string $otp
+     * @return array
+     */
     public function verifyOtp(string $phone, string $otp): array
     {
         try {
             $response = Http::withHeaders([
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
-            ])->post("{$this->baseUrl}", [
+                'key' => $this->apiKey,
+            ])->post($this->verifyOtpUrl, [
                 'country' => $this->country,
                 'phone' => $phone,
-                'project_id' => $this->projectId,
+                'projectId' => $this->projectId,
                 'otp' => $otp,
-                'key' => $this->apiKey,
             ]);
 
-            $json = $response->json();
+            $json = $response->json(); //
 
             return is_array($json) ? $json : [
                 'success' => false,
