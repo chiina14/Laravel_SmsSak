@@ -3,6 +3,7 @@
 namespace Hamada\Laravel_SmsSak;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\RequestException;
 
 class SmsSak
 {
@@ -21,26 +22,50 @@ class SmsSak
 
     public function sendOtp(string $phone): array
     {
-        $response = Http::post("{$this->baseUrl}/sendotp", [
-            'country' => $this->country,
-            'phone' => $phone,
-            'project_id' => $this->projectId,
-            'key' => $this->apiKey,
-        ]);
+        try {
+            $response = Http::throw()->post("{$this->baseUrl}/sendotp", [
+                'country' => $this->country,
+                'phone' => $phone,
+                'project_id' => $this->projectId,
+                'key' => $this->apiKey,
+            ]);
 
-        return $response->json();
+            $json = $response->json();
+
+            return is_array($json) ? $json : [
+                'success' => false,
+                'message' => 'Invalid response from server.',
+            ];
+        } catch (RequestException $e) {
+            return [
+                'success' => false,
+                'message' => $e->getMessage(),
+            ];
+        }
     }
 
     public function verifyOtp(string $phone, string $otp): array
     {
-        $response = Http::post("{$this->baseUrl}/verifyotp", [
-            'country' => $this->country,
-            'phone' => $phone,
-            'project_id' => $this->projectId,
-            'otp' => $otp,
-            'key' => $this->apiKey,
-        ]);
+        try {
+            $response = Http::throw()->post("{$this->baseUrl}/verifyotp", [
+                'country' => $this->country,
+                'phone' => $phone,
+                'project_id' => $this->projectId,
+                'otp' => $otp,
+                'key' => $this->apiKey,
+            ]);
 
-        return $response->json();
+            $json = $response->json();
+
+            return is_array($json) ? $json : [
+                'success' => false,
+                'message' => 'Invalid response from server.',
+            ];
+        } catch (RequestException $e) {
+            return [
+                'success' => false,
+                'message' => $e->getMessage(),
+            ];
+        }
     }
 }
