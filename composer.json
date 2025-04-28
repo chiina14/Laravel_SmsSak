@@ -1,0 +1,28 @@
+{
+    "name": "hamada/laravel_sms_sak",
+    "description": "Send and verify OTP using SmsSak in Laravel",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+      {
+        "name": "Hamada otp ",
+        "email": "hamada14bel@gmail.com"
+      }
+    ],
+    "autoload": {
+      "psr-4": {
+        "Hamada\\Laravel_SmsSak\\": "src/"
+      }
+    },
+    "extra": {
+      "laravel": {
+        "providers": [
+          "Hamada\\Laravel_SmsSak\\SmsSakServiceProvider"
+        ]
+      }
+    },
+    "require": {
+      "php": "^8.0",
+      "illuminate/support": "^10.0"
+    }
+  }

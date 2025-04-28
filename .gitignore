@@ -1,0 +1,21 @@
+# Ignore the vendor directory (composer dependencies)
+vendor/
+
+# Ignore environment files
+.env
+
+# Ignore IDE and editor files
+.idea/
+.vscode/
+
+# Ignore cache, sessions, and log files
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+
+# Ignore compiled views
+/resources/views/*.php
+
+# Ignore Node.js dependencies if using Node
+node_modules/
