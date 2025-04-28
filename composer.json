@@ -15,11 +15,14 @@
       }
     },
     "extra": {
-      "laravel": {
-        "providers": [
-          "Hamada\\Laravel_SmsSak\\SmsSakServiceProvider"
-        ]
-      }
+        "laravel": {
+            "providers": [
+                "Hamada\\Laravel_SmsSak\\SmsSakServiceProvider"
+            ],
+            "aliases": {
+                "SmsSak": "Hamada\\Laravel_SmsSak\\Facades\\SmsSak"
+            }
+        }
     },
     "require": {
       "php": "^8.0",
