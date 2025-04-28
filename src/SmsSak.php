@@ -14,7 +14,7 @@ class SmsSak
 
     public function __construct()
     {
-        $this->baseUrl = config('smssak.base_url', 'https://smssak.com/api');
+        $this->baseUrl = config('smssak.base_url');
         $this->apiKey = config('smssak.api_key');
         $this->projectId = config('smssak.project_id');
         $this->country = config('smssak.country', 'dz');
@@ -23,7 +23,10 @@ class SmsSak
     public function sendOtp(string $phone): array
     {
         try {
-            $response = Http::throw()->post("{$this->baseUrl}/sendotp", [
+            $response = Http::withHeaders([
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ])->post("{$this->baseUrl}", [
                 'country' => $this->country,
                 'phone' => $phone,
                 'project_id' => $this->projectId,
@@ -47,7 +50,10 @@ class SmsSak
     public function verifyOtp(string $phone, string $otp): array
     {
         try {
-            $response = Http::throw()->post("{$this->baseUrl}/verifyotp", [
+            $response = Http::withHeaders([
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ])->post("{$this->baseUrl}", [
                 'country' => $this->country,
                 'phone' => $phone,
                 'project_id' => $this->projectId,
