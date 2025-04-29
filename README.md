@@ -24,9 +24,9 @@ Avant d'installer ce package, assurez-vous que vous avez les éléments suivants
 
 ### Étape 1 : Ajouter le package à votre projet Laravel
 
-Ajoutez le package `Hamada/Laravel_SmsSak` à votre projet Laravel en utilisant Composer.
+Ajoutez le package `hamada/laravel-smssak` à votre projet Laravel en utilisant Composer.
 
-```bash
+```
 composer require hamada/laravel-smssak
 ```
 
@@ -34,7 +34,7 @@ composer require hamada/laravel-smssak
 
 Après avoir installé le package, publiez le fichier de configuration avec la commande suivante :
 
-```bash
+```
 php artisan vendor:publish --provider="Hamada\Laravel_SmsSak\SmsSakServiceProvider" --tag="config"
 ```
 
@@ -44,7 +44,7 @@ Dans le fichier `config/smssak.php`, entrez vos informations d'API que vous pouv
 
 ```php
 return [
-    'country' => 'dz', // Exemple : 'dz' pour l'Algérie
+    'country' => 'dz',
     'project_id' => env('SMSSAK_PROJECT_ID', 'votre_project_id'),
     'api_key' => env('SMSSAK_API_KEY', 'votre_api_key'),
 ];
@@ -61,27 +61,23 @@ SMSSAK_API_KEY=votre_api_key
 
 ### Envoyer un OTP
 
-Voici un exemple d'utilisation pour envoyer un OTP par SMS :
-
 ```php
 use Hamada\Laravel_SmsSak\Facades\SmsSak;
 
-$phone = 'votre_numero_de_telephone';
-$otp = SmsSak::sendOtp($phone);
+$phone = '+213XXXXXXXXX';
+$response = SmsSak::sendOtp($phone);
 ```
 
 ### Vérifier un OTP
 
-Pour vérifier un OTP, utilisez la fonction `verifyOtp` comme suit :
-
 ```php
 use Hamada\Laravel_SmsSak\Facades\SmsSak;
 
-$phone = 'votre_numero_de_telephone';
-$otp = 'code_otp';
-$isVerified = SmsSak::verifyOtp($phone, $otp);
+$phone = '+213XXXXXXXXX';
+$otp = '1234';
+$response = SmsSak::verifyOtp($phone, $otp);
 
-if ($isVerified) {
+if ($response['success']) {
     // OTP vérifié avec succès
 } else {
     // Échec de la vérification
@@ -95,5 +91,3 @@ Les contributions sont les bienvenues ! Si vous avez des suggestions ou des amé
 ## License
 
 Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
-
----

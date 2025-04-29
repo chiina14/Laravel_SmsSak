@@ -16,30 +16,26 @@ class SmsSak
 
     public function __construct()
     {
-        $this->sendOtpUrl = config('smssak.send_otp_url', 'https://sendotp-47lvvvrp4a-uc.a.run.app');
-        $this->verifyOtpUrl = config('smssak.verify_otp_url', 'https://verifyotp-47lvvvrp4a-uc.a.run.app');
-
-        $this->apiKey = config('smssak.api_key');
-        $this->projectId = config('smssak.project_id');
-        $this->country = config('smssak.country', 'dz');
+        $this->sendOtpUrl    = config('smssak.send_otp_url', 'https://sendotp-47lvvvrp4a-uc.a.run.app');
+        $this->verifyOtpUrl  = config('smssak.verify_otp_url', 'https://verifyotp-47lvvvrp4a-uc.a.run.app');
+        $this->apiKey        = config('smssak.api_key');
+        $this->projectId     = config('smssak.project_id');
+        $this->country       = config('smssak.country', 'dz');
     }
 
     /**
-     * Send OTP to a phone number.
-     *
-     * @param string \$phone
-     * @return array
+     *  Send Otp.
      */
     public function sendOtp(string $phone): array
     {
         try {
             $response = Http::withHeaders([
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
-                'key' => $this->apiKey,
+                'Accept'        => 'application/json',
+                'Content-Type'  => 'application/json',
+                'key'           => $this->apiKey,
             ])->post($this->sendOtpUrl, [
-                'country' => $this->country,
-                'phone' => $phone,
+                'country'   => $this->country,
+                'phone'     => $phone,
                 'projectId' => $this->projectId,
             ]);
 
@@ -48,41 +44,37 @@ class SmsSak
             if (isset($json['success']) && $json['success'] === 'SMS sent successfully.') {
                 return [
                     'success' => true,
-                    'message' => $json['success'],
+                    'message' => 'SMS envoyé avec succès.',
                 ];
             }
 
             return [
                 'success' => false,
-                'message' => $json['error'] ?? 'Unknown error from sendOtp.',
+                'message' => $json['error'] ?? 'Erreur inconnue lors de l’envoi du SMS.',
             ];
         } catch (RequestException $e) {
             return [
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Erreur de connexion : ' . $e->getMessage(),
             ];
         }
     }
 
     /**
-     * Verify an OTP for a phone number.
-     *
-     * @param string \$phone
-     * @param string \$otp
-     * @return array
+     * verify OTP.
      */
     public function verifyOtp(string $phone, string $otp): array
     {
         try {
             $response = Http::withHeaders([
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
-                'key' => $this->apiKey,
+                'Accept'        => 'application/json',
+                'Content-Type'  => 'application/json',
+                'key'           => $this->apiKey,
             ])->post($this->verifyOtpUrl, [
-                'country' => $this->country,
-                'phone' => $phone,
+                'country'   => $this->country,
+                'phone'     => $phone,
                 'projectId' => $this->projectId,
-                'otp' => $otp,
+                'otp'       => $otp,
             ]);
 
             $json = $response->json();
@@ -90,7 +82,7 @@ class SmsSak
             if (isset($json['success']) && $json['success'] === 'OTP verified successfully.') {
                 return [
                     'success' => true,
-                    'message' => $json['success'],
+                    'message' => 'OTP vérifié avec succès.',
                 ];
             }
 
@@ -101,7 +93,7 @@ class SmsSak
         } catch (RequestException $e) {
             return [
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Erreur de connexion : ' . $e->getMessage(),
             ];
         }
     }
