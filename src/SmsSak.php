@@ -79,11 +79,18 @@ class SmsSak
                 'otp' => $otp,
             ]);
 
-            $json = $response->json(); //
+            $json = $response->json();
 
-            return is_array($json) ? $json : [
+            if (isset($json['success']) && $json['success'] === 'OTP verified successfully.') {
+                return [
+                    'success' => true,
+                    'message' => $json['success'],
+                ];
+            }
+
+            return [
                 'success' => false,
-                'message' => 'Invalid response from server.',
+                'message' => $json['success'] ?? 'Échec de la vérification.',
             ];
         } catch (RequestException $e) {
             return [
