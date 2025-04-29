@@ -16,7 +16,6 @@ class SmsSak
 
     public function __construct()
     {
-
         $this->sendOtpUrl = config('smssak.send_otp_url', 'https://sendotp-47lvvvrp4a-uc.a.run.app');
         $this->verifyOtpUrl = config('smssak.verify_otp_url', 'https://verifyotp-47lvvvrp4a-uc.a.run.app');
 
@@ -26,9 +25,9 @@ class SmsSak
     }
 
     /**
+     * Send OTP to a phone number.
      *
-     *
-     * @param string $phone
+     * @param string \$phone
      * @return array
      */
     public function sendOtp(string $phone): array
@@ -46,9 +45,16 @@ class SmsSak
 
             $json = $response->json();
 
-            return is_array($json) ? $json : [
+            if (isset($json['success']) && $json['success'] === 'SMS sent successfully.') {
+                return [
+                    'success' => true,
+                    'message' => $json['success'],
+                ];
+            }
+
+            return [
                 'success' => false,
-                'message' => 'Invalid response from server.',
+                'message' => $json['error'] ?? 'Unknown error from sendOtp.',
             ];
         } catch (RequestException $e) {
             return [
@@ -59,10 +65,10 @@ class SmsSak
     }
 
     /**
+     * Verify an OTP for a phone number.
      *
-     *
-     * @param string $phone
-     * @param string $otp
+     * @param string \$phone
+     * @param string \$otp
      * @return array
      */
     public function verifyOtp(string $phone, string $otp): array
@@ -90,7 +96,7 @@ class SmsSak
 
             return [
                 'success' => false,
-                'message' => $json['success'] ?? 'Échec de la vérification.',
+                'message' => $json['error'] ?? 'Échec de la vérification.',
             ];
         } catch (RequestException $e) {
             return [
